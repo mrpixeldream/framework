@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use DreamCodeFramework\Configuration\Concrete\FileLoader;
+use DreamCodeFramework\Configuration\Exceptions\InvalidConfigurationKeyException;
 use DreamCodeFramework\Configuration\Manager;
 use PHPUnit\Framework\TestCase;
 
@@ -11,7 +12,9 @@ use PHPUnit\Framework\TestCase;
  */
 class ConfigurationTest extends TestCase
 {
+    /** @var Manager */
     private $configurationManager;
+    /** @var FileLoader */
     private $fileLoader;
     
     protected function setUp()
@@ -36,10 +39,10 @@ class ConfigurationTest extends TestCase
     /**
      * @test
      */
-    public function loader_loads_files_from_subdirectories(): void
+    /*public function loader_loads_files_from_subdirectories(): void
     {
         
-    }
+    }*/
 
     /**
      * @test
@@ -48,6 +51,7 @@ class ConfigurationTest extends TestCase
     {
         $this->assertEquals('debug', $this->configurationManager->get('app.mode'));
         $this->assertEquals('DreamCode Framework Skeleton App', $this->configurationManager->get('app.name'));
+        $this->assertEquals('Subkey Value', $this->configurationManager->get('app.sub.key'));
     }
 
     /**
@@ -55,6 +59,7 @@ class ConfigurationTest extends TestCase
      */
     public function missing_configuration_variables_throw_exception(): void 
     {
-        
+        $this->expectException(InvalidConfigurationKeyException::class);
+        $this->configurationManager->get('key.not.exists');
     }
 }

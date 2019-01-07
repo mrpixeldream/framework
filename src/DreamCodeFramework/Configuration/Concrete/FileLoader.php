@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace DreamCodeFramework\Configuration\Concrete;
 
+use DreamCodeFramework\Configuration\Exceptions\InvalidConfigurationKeyException;
 use DreamCodeFramework\Configuration\LoaderInterface;
-use Illuminate\Support\Str;
+use DreamCodeFramework\Utility\Str;
 
 class FileLoader implements LoaderInterface
 {
@@ -39,31 +40,53 @@ class FileLoader implements LoaderInterface
         return $this->files->toArray();
     }
 
+    /**
+     * @param string $key
+     * @return string|null
+     * @throws InvalidConfigurationKeyException
+     */
     function loadKey(string $key): ?string
     {
-        $filePrefix = $this->popFilePrefix($key);
+        $filePrefix = Str::pop($key, '.');
         
         if (! array_key_exists($filePrefix, $this->keys)) {
             // Not loaded yet. We need to look it up in the matching file.
             if ($this->isFileRegistered($filePrefix)) {
                 $this->keys[$filePrefix] = require $this->path.DIRECTORY_SEPARATOR.$filePrefix.static::SUFFIX;
+            } else {
+                throw new InvalidConfigurationKeyException('No file was registered to match the first part of the given key: '.$filePrefix);
             }
+        }
+        
+        if (Str::contains($key, '.')) {
+            return $this->getRecursive($key, $this->keys[$filePrefix]);
+        }
+
+        if (! isset($this->keys[$filePrefix][$key])) {
+            throw new InvalidConfigurationKeyException('The given key '.$key.' was not found in file '.$filePrefix);
         }
         
         return $this->keys[$filePrefix][$key];
     }
-    
-    private function popFilePrefix(string &$key): string 
+
+    /**
+     * @param string $key
+     * @param array $subArray
+     * @return string|null
+     * @throws InvalidConfigurationKeyException
+     */
+    private function getRecursive(string $key, array $subArray): ?string
     {
-        if (! Str::contains($key, '.')) {
-            return $key;
+        $prefix = Str::pop($key, '.');
+        if (Str::contains($key, '.')) {
+            if (! is_array($subArray[$prefix])) {
+                throw new InvalidConfigurationKeyException('Tried to resolve key recursively but found literal value instead of array before key parsing ended. Stopped at '.$prefix);
+            }
+            
+            return $this->getRecursive($key, $subArray[$prefix]);
         }
-        
-        $parts = collect(explode('.', $key));
-        $prefix = $parts->shift();
-        $key = $parts->implode('.');
-        
-        return $prefix;
+
+        return $subArray[$prefix][$key];
     }
 
     private function isFileRegistered(string $file)
