@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * @TestCase
  */
-class ConfigurationTest extends TestCase
+class FileLoaderTest extends TestCase
 {
     /** @var Manager */
     private $configurationManager;
@@ -20,8 +20,8 @@ class ConfigurationTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-        
-        $this->fileLoader = new FileLoader(__DIR__.'/../../framework-skeleton/config');
+
+        $this->fileLoader = new FileLoader(__DIR__.'/../../../framework-skeleton/config');
         
         $this->configurationManager = new Manager();
         $this->configurationManager->addLoader($this->fileLoader);
