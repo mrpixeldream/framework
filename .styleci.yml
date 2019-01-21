@@ -6,7 +6,6 @@ disabled:
   - unary_operator_spaces
   - phpdoc_separation
   - phpdoc_order
-  - phpdoc_types_order
   - alpha_ordered_imports
 finder:
   exclude:
