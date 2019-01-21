@@ -6,5 +6,5 @@ namespace DreamCodeFramework\Configuration;
 
 interface LoaderInterface
 {
-    function loadKey(string $key): ?string;
+    public function loadKey(string $key): ?string;
 }

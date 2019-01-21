@@ -6,17 +6,15 @@ namespace DreamCodeFramework;
 
 use DreamCodeFramework\Container\Container;
 use DreamCodeFramework\Http\Kernel;
-use Symfony\Component\HttpKernel\HttpKernel;
 
 /**
- * Class Application
- * @package DreamCodeFramework
+ * Class Application.
  */
 class Application
 {
     private $container;
     private $kernel;
-    
+
     public function __construct()
     {
         /*
@@ -24,7 +22,7 @@ class Application
          */
         $this->container = new Container();
         $this->container->boot();
-        
+
         /*
          * Then we need to bootstrap the Http kernel to handle the request.
          */
