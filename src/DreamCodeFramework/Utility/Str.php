@@ -8,8 +8,8 @@ class Str extends \Illuminate\Support\Str
 {
     /**
      * Splits the string using $delimiter and pops the first element off of it.
-     * @param string $subject
-     * @param string $delimiter
+     * @param  string      $subject
+     * @param  string      $delimiter
      * @return string|null
      */
     public static function pop(string &$subject, string $delimiter = ' '): ?string
