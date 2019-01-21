@@ -9,12 +9,11 @@ use Symfony\Component\HttpKernel\HttpKernel;
 class Kernel extends HttpKernel
 {
     private $request;
-    
+
     private $controllerResolver;
     private $argumentResolver;
-    
-    public static function boot(): Kernel
+
+    public static function boot(): self
     {
-        
     }
 }

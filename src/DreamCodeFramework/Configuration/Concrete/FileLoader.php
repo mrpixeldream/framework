@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DreamCodeFramework\Configuration\Concrete;
 
-use DreamCodeFramework\Configuration\Exceptions\InvalidConfigurationKeyException;
-use DreamCodeFramework\Configuration\LoaderInterface;
 use DreamCodeFramework\Utility\Str;
+use DreamCodeFramework\Configuration\LoaderInterface;
+use DreamCodeFramework\Configuration\Exceptions\InvalidConfigurationKeyException;
 
 class FileLoader implements LoaderInterface
 {
@@ -14,10 +14,10 @@ class FileLoader implements LoaderInterface
 
     private $path;
     private $files;
-    
+
     private $keys = [];
 
-    function __construct(string $path)
+    public function __construct(string $path)
     {
         $this->path = $path;
 
@@ -35,20 +35,20 @@ class FileLoader implements LoaderInterface
      * The registered configuration files are internally handled as a Collection, but returned as array to reduce coupling for the user of this framework.
      * @return array An array of all registered files
      */
-    public function getRegisteredFiles(): array 
+    public function getRegisteredFiles(): array
     {
         return $this->files->toArray();
     }
 
     /**
-     * @param string $key
+     * @param  string                           $key
      * @return string|null
      * @throws InvalidConfigurationKeyException
      */
-    function loadKey(string $key): ?string
+    public function loadKey(string $key): ?string
     {
         $filePrefix = Str::pop($key, '.');
-        
+
         if (! array_key_exists($filePrefix, $this->keys)) {
             // Not loaded yet. We need to look it up in the matching file.
             if ($this->isFileRegistered($filePrefix)) {
@@ -57,7 +57,7 @@ class FileLoader implements LoaderInterface
                 throw new InvalidConfigurationKeyException('No file was registered to match the first part of the given key: '.$filePrefix);
             }
         }
-        
+
         if (Str::contains($key, '.')) {
             return $this->getRecursive($key, $this->keys[$filePrefix]);
         }
@@ -65,13 +65,13 @@ class FileLoader implements LoaderInterface
         if (! isset($this->keys[$filePrefix][$key])) {
             throw new InvalidConfigurationKeyException('The given key '.$key.' was not found in file '.$filePrefix);
         }
-        
+
         return $this->keys[$filePrefix][$key];
     }
 
     /**
-     * @param string $key
-     * @param array $subArray
+     * @param  string                           $key
+     * @param  array                            $subArray
      * @return string|null
      * @throws InvalidConfigurationKeyException
      */
@@ -82,7 +82,7 @@ class FileLoader implements LoaderInterface
             if (! is_array($subArray[$prefix])) {
                 throw new InvalidConfigurationKeyException('Tried to resolve key recursively but found literal value instead of array before key parsing ended. Stopped at '.$prefix);
             }
-            
+
             return $this->getRecursive($key, $subArray[$prefix]);
         }
 
