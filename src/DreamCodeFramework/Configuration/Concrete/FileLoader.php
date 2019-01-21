@@ -35,7 +35,7 @@ class FileLoader implements LoaderInterface
      * The registered configuration files are internally handled as a Collection, but returned as array to reduce coupling for the user of this framework.
      * @return array An array of all registered files
      */
-    public function getRegisteredFiles(): array
+    public function getRegisteredFiles(): array 
     {
         return $this->files->toArray();
     }
