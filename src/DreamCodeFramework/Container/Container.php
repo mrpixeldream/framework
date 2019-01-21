@@ -4,5 +4,4 @@ namespace DreamCodeFramework\Container;
 
 class Container
 {
-
 }
